@@ -1,4 +1,4 @@
-const api = "http://api.weatherapi.com/v1/forecast.json?key=71e495caed744252930201920243105&q=London&days=1&aqi=no&alerts=no";
+const api = "http://api.weatherapi.com/v1/forecast.json?key=71e495caed744252930201920243105&q=Paris&days=4&aqi=no&alerts=no";
 
 async function getWeather() {
     let request = await fetch(api);
@@ -6,22 +6,65 @@ async function getWeather() {
     console.log(response);
     
     const {current:today, forecast, location} = response;
-    console.log(today);
-    const current_text = response?.current?.condition?.text;
-    console.log(current_text);
-    updateCurrentWeather(today);
+    updateCurrentWeather(today, forecast);
+    updateForecastWeather(forecast);
 }
 
-function updateCurrentWeather(call) {
-    let condition_text = call.condition.text;
-    let condition_img = "https:" + call.condition.icon;
-    let temp = call.temp_f;
-    let feels = call.feelslike_f;
-    let windSpeed = call.wind_mph;
+function updateCurrentWeather(current, forecast) {
+    let currentElements ={
+        "condition-text": current.condition.text, 
+        "condition-icon": current.condition.icon, 
+        "current-temp": current.temp_f, 
+        "feelslike": current.feelslike_f, 
+        "windspeed": current.wind_mph,
+        "maxtemp": forecast.forecastday[0].day.maxtemp_f,
+        "mintemp": forecast.forecastday[0].day.mintemp_f
+    }
 
-    document.getElementById("current-condition-text").textContent = condition_text;
-    document.getElementById("current-img").setAttribute("src", condition_img);
-    document.getElementById("current-temp").textContent = Math.round(temp);
+    updateElements(currentElements, "current");
+}
+
+function updateForecastWeather(forecast) {
+    forecast.forecastday.forEach((forecastday, index) => {
+        if (index != 0) {
+            const forecastElements = {
+                "date": getDay(forecastday.date),
+                "maxtemp": forecastday.day.maxtemp_f,
+                "mintemp": forecastday.day.mintemp_f,
+                "condition-icon": forecastday.day.condition.icon,
+                "daily-chance-of-rain": forecastday.daily_chance_of_rain
+            }
+
+            updateElements(forecastElements, `forecast-${index}`)
+        }
+    })
+}
+
+function updateElements(elements, parentElement) {
+    const parent = document.getElementById(parentElement);
+    if (parent == null) {
+        throw new Error("Parent element not found");
+    }
+    for (let i in elements) {
+        const element = parent.querySelector("." + i);
+        const value = elements[i];
+
+        if (isNaN(parseFloat(value))) {
+            if (element instanceof HTMLImageElement) {
+                element.setAttribute("src", "https://" + value);
+            } else {
+            element.textContent=value;
+            }
+        } else {
+            element.textContent = Math.round(value);
+        }
+    } 
+}
+
+function getDay(dow) {
+    const today = new Date(dow).getDay();
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return days[today];
 }
 
 getWeather(); 

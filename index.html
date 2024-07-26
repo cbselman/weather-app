@@ -6,12 +6,32 @@
     <title>Document</title>
   </head>
   <body>
-    <div id="location"></div>
-    <div id="current-condition-text"></div>
-    <div id="current-condition-img"><img id="current-img" src="" /></div>
-    <div id="current-temp"></div>
-    <div id="hi-temp"></div>
-    <div id="low-temp"></div>
+    <div class="container" id="current">
+      <div id="location"></div>
+      <div class="condition-text"></div>
+      <div><img class="condition-icon" src="" /></div>
+      <div class="current-temp"></div>
+      <div class="feelslike"></div>
+      <div class="windspeed"></div>
+      <div class="maxtemp"></div>
+      <div class="mintemp"></div>
+    </div>
+    <div class="container" id="forecast-1">
+      <p>Forecast Day 1</p>
+      <div class="date"></div>
+      <div class="maxtemp"></div>
+      <div class="mintemp"></div>
+      <div class="daily-chance-of-rain"></div>
+      <div><img class="condition-icon" src="" /></div>
+    </div>
+    <div class="container" id="forecast-2">
+      <p>Forecast Day 2</p>
+      <div class="date"></div>
+      <div class="maxtemp"></div>
+      <div class="mintemp"></div>
+      <div class="daily-chance-of-rain"></div>
+      <div><img class="condition-icon" src="" /></div>
+    </div>
     <script src="scripts.js"></script>
   </body>
 </html>
